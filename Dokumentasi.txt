@@ -81,6 +81,9 @@ Jadi intinya, BGP digunakan untuk memanipulasi jalur keluar dan pemilihan provid
 di dalam autonomous system. Penggunaan iBGP atau tidak tergantung kebutuhan dan preferensi perusahaan.
 
 
+==========================================================================================================
+
+
 (50:55) true but uh right now if i explain it will take around one hour okay okay no no no yes yes yes i will explain it but again do not worry about that so here you will get the ospf the the route via ospf the route via bgp as well but again the 80 value of ospf is 110 80 value of bgp is 200 okay so again your route will be preferred via this one only yes okay but later on i will explain you how you do the math manipulation via bgp attributes okay okay so this is what we have here okay any other question related to this
 
 
