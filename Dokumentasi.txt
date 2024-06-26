@@ -1,0 +1,86 @@
+OSPF+BGP+MPLS
+
+==================
+
+https://www.youtube.com/watch?v=FvqKakTA3Mk&list=PLtFe0r3Pejgn7tZO3T909FhX1Fzca5AXg
+
+part 15 menitan : 
+
+Baiklah, saya akan meringkas poin-poin penting dari video ini:
+
+BGP (Border Gateway Protocol) adalah routing protocol yang digunakan secara luas di Internet. Alasan utama penggunaan BGP adalah:
+
+1. Jika Anda adalah seorang penyedia layanan, Anda perlu menggunakan BGP untuk menyediakan layanan Anda melalui Internet atau MPLS.
+2. Jika Anda melakukan multi-homing, yaitu terhubung ke dua ISP, Anda perlu menggunakan BGP.
+3. BGP berjalan di atas protokol TCP dengan nomor port 179. Setiap paket BGP akan memiliki header IP, di mana protokol field-nya 
+   bernilai 179 untuk mengindikasikan bahwa paket tersebut adalah paket BGP.
+4. Autonomous System (AS) adalah domain administrasi tunggal yang dikendalikan oleh satu administrator. Setiap AS diberi nomor AS yang unik, 
+   yang dapat berupa range 16-bit (1-65535) atau 32-bit (0.0 - 65535.65535). Rentang 64512-65535 digunakan untuk AS privat.
+5. Berbeda dengan EIGRP yang menggunakan metrik internal, BGP menggunakan konsep path vector di mana routing decisions dibuat berdasarkan atribut-atribut 
+   BGP seperti AS-PATH, NEXT-HOP, MED, dll.
+6. BGP hanya melakukan triggered updates, yaitu hanya mengirimkan update saat terjadi perubahan routing, tidak ada periodic update seperti pada 
+   protokol routing lainnya.
+
+Jadi secara singkat, video ini menjelaskan dasar-dasar BGP, mulai dari mengapa BGP digunakan, bagaimana cara kerjanya, serta konsep Autonomous System 
+yang menjadi fondasi BGP.
+
+
+=========================================================================================================================================================
+30 menitan
+
+perbedaan antara iBGP dan eBGP. Berikut adalah rangkuman penting dari apa yang telah Anda jelaskan:
+
+1. iBGP adalah BGP yang berjalan di antara router-router dalam autonomous system (AS) yang sama, sedangkan eBGP adalah BGP yang berjalan di antara 
+   router-router dalam AS yang berbeda.
+2. Untuk iBGP, router-router tidak harus terhubung secara langsung, namun untuk eBGP, router-router harus terhubung secara langsung secara fisik, 
+   kecuali jika menggunakan opsi "disable connected-check" atau "ebgp-multihop".
+3. Pada iBGP, TTL (Time-to-Live) default-nya adalah 255, sedangkan pada eBGP, TTL default-nya adalah 1. Dengan menggunakan "ebgp-multihop", 
+   TTL pada eBGP dapat dinaikkan.
+4. Nilai AD (Administrative Distance) pada iBGP adalah 200, sedangkan pada eBGP adalah 20.
+
+5. Untuk membentuk hubungan tetangga (neighborship) dalam BGP, harus memenuhi kondisi berikut:
+    -Versi BGP harus sama
+    -Untuk iBGP, nomor AS harus sama
+    -Timer hold down harus sama
+    -Jika ada otentikasi, passwordnya harus sama
+
+
+==========================================================
+
+mengaktifkan BGP dan perintah yang diperlukan:
+
+1. Untuk mengaktifkan BGP, Anda perlu masuk ke mode konfigurasi router dan menggunakan perintah "router bgp <nomor AS>". Hanya ada satu proses BGP 
+   yang dapat berjalan pada satu router.
+2. Untuk membuat hubungan tetangga BGP, Anda menggunakan perintah "neighbor <IP tetangga> remote-as <nomor AS remote>". Untuk iBGP, nomor 
+   remote sama dengan nomor AS lokal. Untuk eBGP, nomor AS remote berbeda.
+3. Untuk menonaktifkan tetangga BGP, Anda dapat menggunakan perintah "neighbor <IP tetangga> shutdown" dalam konfigurasi BGP. Ini memungkinkan 
+   Anda menonaktifkan sementara tetangga tanpa menghapus konfigurasinya. Untuk mengaktifkannya kembali, Anda gunakan perintah
+    "no neighbor <IP tetangga> shutdown".
+4. Untuk iBGP, disarankan untuk menggunakan perintah "neighbor <IP tetangga> update-source <antarmuka>" untuk menentukan antarmuka loopback 
+   sebagai sumber. Ini memastikan sesi BGP tidak terdampak jika antarmuka keluar turun.
+5. Sebelum membangun sesi iBGP, harus ada IGP (seperti OSPF, EIGRP, dll.) yang berjalan di jaringan untuk memastikan keterhubungan antara rekan iBGP.
+   IGP memungkinkan rekan BGP belajar alamat loopback satu sama lain.
+6. Alasan untuk menjalankan IGP sebelum iBGP adalah bahwa BGP bergantung pada tabel routing IP untuk menentukan keterhubungan antar rekan. 
+   IGP memastikan tabel routing terisi dengan benar sebelum sesi iBGP dibangun.
+
+=====================================================================
+
+
+1. Untuk memanipulasi jalur keluar (exit points) Anda, Anda membutuhkan protokol BGP (Border Gateway Protocol), bukan IGP (Interior Gateway Protocol) 
+   seperti EIGRP atau OSPF.
+2. Anda dapat menggunakan atribut-atribut BGP seperti weight, AS-path, local preference, dll untuk memanipulasi perilaku routing ke jaringan
+   tertentu atau ke semua jaringan.
+3. Tidak wajib untuk menjalankan iBGP (internal BGP) di dalam autonomous system Anda. Sekitar 90% perusahaan tidak menjalankan iBGP dan hanya 
+   menggunakan eBGP (external BGP) di sisi luar.
+4. Jika Anda ingin menjalankan iBGP antara router R1 dan R3, Anda harus memastikan reachability antara mereka terlebih dahulu, misalnya dengan 
+   menjalankan IGP seperti EIGRP atau OSPF.
+5. Prioritas routing selalu ditentukan oleh routing table, bukan BGP table. Manipulasi atribut BGP hanya akan mempengaruhi pemilihan jalur BGP, 
+   bukan memutuskan jalur routing yang digunakan.
+
+Jadi intinya, BGP digunakan untuk memanipulasi jalur keluar dan pemilihan provider, sedangkan IGP digunakan untuk menentukan jalur internal 
+di dalam autonomous system. Penggunaan iBGP atau tidak tergantung kebutuhan dan preferensi perusahaan.
+
+
+(50:55) true but uh right now if i explain it will take around one hour okay okay no no no yes yes yes i will explain it but again do not worry about that so here you will get the ospf the the route via ospf the route via bgp as well but again the 80 value of ospf is 110 80 value of bgp is 200 okay so again your route will be preferred via this one only yes okay but later on i will explain you how you do the math manipulation via bgp attributes okay okay so this is what we have here okay any other question related to this
+
+
